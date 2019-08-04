@@ -2,6 +2,8 @@ package com.jlawal.demo.studentmgmt.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +19,7 @@ public class Student {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long studentId;
+	@Column(unique = true, nullable = false)
 	private String studentNumber;
 	private String firstName;
 	private String middleName;
@@ -24,15 +27,28 @@ public class Student {
 	private double cgpa;
 	private LocalDate dateOfEnrollment;
 
-	@OneToOne
-	@JoinColumn(name = "transcript_fk")
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "transcript_fk", nullable = false, unique = true)
 	private Transcript transcript;
-	
+
 	@ManyToOne
+	@JoinColumn(nullable = true)
 	private Classroom classroom;
 
 	public Student() {
 		super();
+	}
+
+	public Student(String studentNumber, String firstName, String middleName, String lastName, double cgpa,
+			LocalDate dateOfEnrollment, Transcript transcript) {
+		super();
+		this.studentNumber = studentNumber;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.cgpa = cgpa;
+		this.dateOfEnrollment = dateOfEnrollment;
+		this.transcript = transcript;
 	}
 
 	public Student(String studentNumber, String firstName, String middleName, String lastName, double cgpa,
@@ -111,7 +127,7 @@ public class Student {
 	public void setTranscript(Transcript transcript) {
 		this.transcript = transcript;
 	}
-	
+
 	public Classroom getClassroom() {
 		return classroom;
 	}
@@ -124,8 +140,7 @@ public class Student {
 	public String toString() {
 		return "Student [studentId=" + studentId + ", studentNumber=" + studentNumber + ", firstName=" + firstName
 				+ ", middleName=" + middleName + ", lastName=" + lastName + ", cgpa=" + cgpa + ", dateOfEnrollment="
-				+ dateOfEnrollment + "]" + " Student_Transcript: " + transcript
-				+ " Student_Classroom: " + classroom;
+				+ dateOfEnrollment + "]" + " Student_Transcript: " + transcript + " Student_Classroom: " + classroom;
 	}
 
 }
